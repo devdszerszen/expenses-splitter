@@ -55,6 +55,12 @@ const en = {
     deleteFail: 'Failed to delete. Try again.',
     deleteSuccess: 'Expense removed.',
   },
+  install: {
+    prompt: 'Add to your home screen',
+    iosInstructions: "Tap Share → 'Add to Home Screen'",
+    install: 'Install',
+    dismiss: 'Dismiss',
+  },
 }
 
 const pl: typeof en = {
@@ -111,6 +117,12 @@ const pl: typeof en = {
     addSuccess: 'Wydatek dodany!',
     deleteFail: 'Błąd usuwania. Spróbuj ponownie.',
     deleteSuccess: 'Wydatek usunięty.',
+  },
+  install: {
+    prompt: 'Dodaj do ekranu głównego',
+    iosInstructions: "Dotknij Udostępnij → 'Dodaj do ekranu'",
+    install: 'Zainstaluj',
+    dismiss: 'Odrzuć',
   },
 }
 

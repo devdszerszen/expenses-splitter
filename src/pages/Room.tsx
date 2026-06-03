@@ -10,6 +10,8 @@ import ShareLinks from '../components/ShareLinks'
 import Toast from '../components/Toast'
 import SyncStatus from '../components/SyncStatus'
 import PinGate from '../components/PinGate'
+import InstallBanner from '../components/InstallBanner'
+import { useInstallPrompt, dismissInstallPrompt } from '../hooks/useInstallPrompt'
 import type { Team } from '../types'
 import { t } from '../i18n'
 
@@ -20,6 +22,8 @@ export default function Room() {
   const roomState = useRoom(roomId)
   const { expenses, syncState, addExpense, deleteExpense } = useExpenses(roomId ?? '')
   const { toasts, addToast } = useToast()
+  const installState = useInstallPrompt()
+  const [installDismissed, setInstallDismissed] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
   const [pinUnlocked, setPinUnlocked] = useState(false)
@@ -66,6 +70,11 @@ export default function Room() {
     const error = await addExpense({ room_id: roomId!, ...data })
     if (error) addToast(t.toast.addFail, 'error')
     else addToast(t.toast.addSuccess, 'success')
+  }
+
+  function handleDismissInstall() {
+    dismissInstallPrompt()
+    setInstallDismissed(true)
   }
 
   async function handleDelete(id: string) {
@@ -136,6 +145,14 @@ export default function Room() {
       />
 
       <Toast toasts={toasts} />
+
+      {!installDismissed && installState.type !== 'none' && (
+        <InstallBanner
+          type={installState.type}
+          onInstall={installState.type === 'android' ? installState.prompt : undefined}
+          onDismiss={handleDismissInstall}
+        />
+      )}
     </div>
   )
 }
