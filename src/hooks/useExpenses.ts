@@ -45,7 +45,17 @@ export function useExpenses(roomId: string) {
 
   async function deleteExpense(id: string) {
     setSyncState('saving')
+    setExpenses((prev) => prev.filter((e) => e.id !== id))
     const { error } = await supabase.from('expenses').delete().eq('id', id)
+    if (error) {
+      // Restore the deleted item by re-fetching on failure
+      supabase
+        .from('expenses')
+        .select('*')
+        .eq('room_id', roomId)
+        .order('created_at', { ascending: false })
+        .then(({ data }) => { if (data) setExpenses(data as Expense[]) })
+    }
     setSyncState(error ? 'error' : 'synced')
     return error
   }
