@@ -7,8 +7,8 @@ export default function Home() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const lastRoom = localStorage.getItem('lastRoomId')
-    if (lastRoom) navigate(`/room/${lastRoom}`, { replace: true })
+    const match = document.cookie.match(/(?:^|;\s*)lastRoomId=([^;]+)/)
+    if (match) navigate(`/room/${match[1]}`, { replace: true })
   }, [navigate])
   const [roomName, setRoomName] = useState('')
   const [teamA, setTeamA] = useState('')

@@ -45,8 +45,8 @@ export default function Room() {
 
   const { room } = roomState
 
-  // Remember this room so PWA launch from home screen returns here
-  localStorage.setItem('lastRoomId', room.id)
+  // Cookies are shared between Safari and the installed PWA on iOS; localStorage is not
+  document.cookie = `lastRoomId=${room.id};path=/;max-age=31536000`
 
   if (room.pin_hash && !pinUnlocked) {
     return <PinGate expectedHash={room.pin_hash} onUnlock={() => setPinUnlocked(true)} />
