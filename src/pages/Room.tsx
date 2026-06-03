@@ -89,26 +89,9 @@ export default function Room() {
         teamAName={room.team_a_name}
         teamBName={room.team_b_name}
         expenses={expenses}
+        activeTeam={activeTeam}
+        onTeamSelect={setActiveTeam}
       />
-
-      <div className="flex gap-2">
-        {(['a', 'b'] as Team[]).map((t) => {
-          const name = t === 'a' ? room.team_a_name : room.team_b_name
-          const active = activeTeam === t
-          const cls = t === 'a'
-            ? 'border-team-a text-team-a'
-            : 'border-team-b text-team-b'
-          return (
-            <button
-              key={t}
-              onClick={() => setActiveTeam(t)}
-              className={`flex-1 py-1.5 rounded-lg border font-heading text-sm uppercase tracking-wide transition-all ${cls} ${active ? 'opacity-100' : 'opacity-30'}`}
-            >
-              {name}
-            </button>
-          )
-        })}
-      </div>
 
       <div className="flex-1">
         <ExpenseList

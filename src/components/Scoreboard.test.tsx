@@ -19,6 +19,8 @@ describe('Scoreboard', () => {
         teamAName="Szerszenie"
         teamBName="Kierony"
         expenses={[makeExpense('a', 100), makeExpense('b', 60)]}
+        activeTeam="a"
+        onTeamSelect={() => {}}
       />,
     )
     expect(screen.getAllByText('Szerszenie').length).toBeGreaterThan(0)
@@ -33,6 +35,8 @@ describe('Scoreboard', () => {
         teamAName="Szerszenie"
         teamBName="Kierony"
         expenses={[makeExpense('a', 200), makeExpense('b', 100)]}
+        activeTeam="a"
+        onTeamSelect={() => {}}
       />,
     )
     // Settlement text spans multiple elements — check parent paragraph text content
@@ -48,6 +52,8 @@ describe('Scoreboard', () => {
         teamAName="Szerszenie"
         teamBName="Kierony"
         expenses={[makeExpense('a', 100), makeExpense('b', 100)]}
+        activeTeam="a"
+        onTeamSelect={() => {}}
       />,
     )
     expect(screen.getByText(/even/i)).toBeInTheDocument()
