@@ -1,3 +1,127 @@
+import { useState } from 'react'
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
+import { useRoom } from '../hooks/useRoom'
+import { useExpenses } from '../hooks/useExpenses'
+import { useToast } from '../hooks/useToast'
+import Scoreboard from '../components/Scoreboard'
+import ExpenseList from '../components/ExpenseList'
+import AddExpenseModal from '../components/AddExpenseModal'
+import ShareLinks from '../components/ShareLinks'
+import Toast from '../components/Toast'
+import SyncStatus from '../components/SyncStatus'
+import PinGate from '../components/PinGate'
+import type { Team } from '../types'
+
 export default function Room() {
-  return <div className="p-8 font-heading text-4xl text-team-b">Room — TODO</div>
+  const { roomId } = useParams<{ roomId: string }>()
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const roomState = useRoom(roomId)
+  const { expenses, syncState, addExpense, deleteExpense } = useExpenses(roomId ?? '')
+  const { toasts, addToast } = useToast()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [pinUnlocked, setPinUnlocked] = useState(false)
+
+  const urlTeam = searchParams.get('team') as Team | null
+  const [activeTeam, setActiveTeam] = useState<Team>(urlTeam === 'b' ? 'b' : 'a')
+
+  if (roomState.status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-dvh">
+        <div className="font-heading text-3xl text-gray-600 animate-pulse">Loading…</div>
+      </div>
+    )
+  }
+
+  if (roomState.status === 'not_found' || roomState.status === 'error') {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-dvh gap-4 px-4">
+        <h1 className="font-heading text-4xl text-team-b">Room Not Found</h1>
+        <button onClick={() => navigate('/')} className="text-team-a underline font-body">Go home</button>
+      </div>
+    )
+  }
+
+  const { room } = roomState
+
+  if (room.pin_hash && !pinUnlocked) {
+    return <PinGate expectedHash={room.pin_hash} onUnlock={() => setPinUnlocked(true)} />
+  }
+
+  async function handleAddExpense(data: { team: Team; amount: number; description: string }) {
+    setModalOpen(false)
+    const error = await addExpense({ room_id: roomId!, ...data })
+    if (error) addToast('Failed to save expense. Try again.', 'error')
+    else addToast('Expense added!', 'success')
+  }
+
+  async function handleDelete(id: string) {
+    const error = await deleteExpense(id)
+    if (error) addToast('Failed to delete. Try again.', 'error')
+    else addToast('Expense removed.', 'info')
+  }
+
+  return (
+    <div className="flex flex-col min-h-dvh max-w-sm mx-auto px-4 py-6 gap-5">
+      <div className="flex items-center justify-between">
+        <h1 className="font-heading text-3xl uppercase text-white tracking-wide">{room.name}</h1>
+        <SyncStatus state={syncState} />
+      </div>
+
+      <Scoreboard
+        teamAName={room.team_a_name}
+        teamBName={room.team_b_name}
+        expenses={expenses}
+      />
+
+      <div className="flex gap-2">
+        {(['a', 'b'] as Team[]).map((t) => {
+          const name = t === 'a' ? room.team_a_name : room.team_b_name
+          const active = activeTeam === t
+          const cls = t === 'a'
+            ? 'border-team-a text-team-a'
+            : 'border-team-b text-team-b'
+          return (
+            <button
+              key={t}
+              onClick={() => setActiveTeam(t)}
+              className={`flex-1 py-1.5 rounded-lg border font-heading text-sm uppercase tracking-wide transition-all ${cls} ${active ? 'opacity-100' : 'opacity-30'}`}
+            >
+              {name}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="flex-1">
+        <ExpenseList
+          expenses={expenses}
+          teamAName={room.team_a_name}
+          teamBName={room.team_b_name}
+          onDelete={handleDelete}
+        />
+      </div>
+
+      <ShareLinks roomId={room.id} teamAName={room.team_a_name} teamBName={room.team_b_name} />
+
+      <button
+        onClick={() => setModalOpen(true)}
+        className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-team-a text-black font-heading text-4xl shadow-lg shadow-team-a/30 flex items-center justify-center z-30"
+        aria-label="Add expense"
+      >
+        +
+      </button>
+
+      <AddExpenseModal
+        open={modalOpen}
+        initialTeam={activeTeam}
+        teamAName={room.team_a_name}
+        teamBName={room.team_b_name}
+        onSubmit={handleAddExpense}
+        onClose={() => setModalOpen(false)}
+      />
+
+      <Toast toasts={toasts} />
+    </div>
+  )
 }
