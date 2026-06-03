@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #0f0800;
+    font-family: 'Lato', sans-serif;
+    color: #f5f0e8;
+    min-height: 100dvh;
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 48px,
+      rgba(255, 183, 0, 0.03) 48px,
+      rgba(255, 183, 0, 0.03) 52px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 80px,
+      rgba(255, 255, 255, 0.02) 80px,
+      rgba(255, 255, 255, 0.02) 82px
+    );
+  }
+
+  h1, h2, h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+}
