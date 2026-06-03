@@ -20,6 +20,7 @@ export default function Room() {
   const { expenses, syncState, addExpense, deleteExpense } = useExpenses(roomId ?? '')
   const { toasts, addToast } = useToast()
   const [modalOpen, setModalOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
   const [pinUnlocked, setPinUnlocked] = useState(false)
 
   const urlTeam = searchParams.get('team') as Team | null
@@ -64,7 +65,19 @@ export default function Room() {
   return (
     <div className="flex flex-col min-h-dvh max-w-sm mx-auto px-4 py-6 gap-5">
       <div className="flex items-center justify-between">
-        <h1 className="font-heading text-3xl uppercase text-white tracking-wide">{room.name}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="font-heading text-3xl uppercase text-white tracking-wide">{room.name}</h1>
+          <button
+            onClick={() => setShareOpen(true)}
+            aria-label="Share room"
+            className="text-gray-500 hover:text-team-a transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </button>
+        </div>
         <SyncStatus state={syncState} />
       </div>
 
@@ -102,8 +115,6 @@ export default function Room() {
         />
       </div>
 
-      <ShareLinks roomId={room.id} teamAName={room.team_a_name} teamBName={room.team_b_name} />
-
       <button
         onClick={() => setModalOpen(true)}
         className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-team-a text-black font-heading text-4xl shadow-lg shadow-team-a/30 flex items-center justify-center z-30"
@@ -111,6 +122,14 @@ export default function Room() {
       >
         +
       </button>
+
+      <ShareLinks
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        roomId={room.id}
+        teamAName={room.team_a_name}
+        teamBName={room.team_b_name}
+      />
 
       <AddExpenseModal
         open={modalOpen}
