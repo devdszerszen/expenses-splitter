@@ -19,10 +19,11 @@ export function useRoom(roomId: string | undefined): RoomState {
       .from('rooms')
       .select('*')
       .eq('id', roomId)
-      .single()
+      .maybeSingle()
       .then(({ data, error }) => {
-        if (error || !data) setState({ status: 'not_found' })
-        else setState({ status: 'ok', room: data as Room })
+        if (!error && data) setState({ status: 'ok', room: data as Room })
+        else if (!error && !data) setState({ status: 'not_found' })
+        else setState({ status: 'error', message: error?.message ?? 'unknown' })
       })
   }, [roomId])
 

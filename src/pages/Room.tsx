@@ -39,7 +39,15 @@ export default function Room() {
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh gap-4 px-4">
         <h1 className="font-heading text-4xl text-team-b">{t.room.notFound}</h1>
-        <button onClick={() => navigate('/')} className="text-team-a underline font-body">{t.room.goHome}</button>
+        <button
+          onClick={() => {
+            if (roomState.status === 'not_found') document.cookie = 'lastRoomId=;path=/;max-age=0'
+            navigate('/')
+          }}
+          className="text-team-a underline font-body"
+        >
+          {t.room.goHome}
+        </button>
       </div>
     )
   }
