@@ -45,6 +45,9 @@ export default function Room() {
 
   const { room } = roomState
 
+  // Remember this room so PWA launch from home screen returns here
+  localStorage.setItem('lastRoomId', room.id)
+
   if (room.pin_hash && !pinUnlocked) {
     return <PinGate expectedHash={room.pin_hash} onUnlock={() => setPinUnlocked(true)} />
   }

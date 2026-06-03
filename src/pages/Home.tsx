@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { hashPin } from '../lib/hash'
 
 export default function Home() {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const lastRoom = localStorage.getItem('lastRoomId')
+    if (lastRoom) navigate(`/room/${lastRoom}`, { replace: true })
+  }, [navigate])
   const [roomName, setRoomName] = useState('')
   const [teamA, setTeamA] = useState('')
   const [teamB, setTeamB] = useState('')
