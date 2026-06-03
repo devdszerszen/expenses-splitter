@@ -8,7 +8,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Trip Splitter',
+        name: 'Expenses Splitter',
         short_name: 'Splitter',
         description: 'Real-time expense splitting for groups',
         theme_color: '#0f0800',
