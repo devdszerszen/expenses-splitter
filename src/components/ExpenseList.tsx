@@ -1,4 +1,5 @@
 import type { Expense } from '../types'
+import { t } from '../i18n'
 
 interface Props {
   expenses: Expense[]
@@ -14,7 +15,7 @@ function fmt(n: number) {
 export default function ExpenseList({ expenses, teamAName, teamBName, onDelete }: Props) {
   if (!expenses.length) {
     return (
-      <p className="text-center text-gray-500 py-10 font-body">No expenses yet. Add one!</p>
+      <p className="text-center text-gray-500 py-10 font-body">{t.list.empty}</p>
     )
   }
 
@@ -37,7 +38,7 @@ export default function ExpenseList({ expenses, teamAName, teamBName, onDelete }
               <span className="font-heading text-xl">{fmt(e.amount)}</span>
               <button
                 onClick={() => onDelete(e.id)}
-                aria-label="Delete expense"
+                aria-label={t.list.deleteAriaLabel}
                 className="text-gray-600 hover:text-team-b transition-colors text-lg leading-none"
               >
                 ×

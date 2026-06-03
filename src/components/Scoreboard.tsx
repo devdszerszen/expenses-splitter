@@ -1,5 +1,6 @@
 import type { Expense } from '../types'
 import { calculateSettlement } from '../lib/settlement'
+import { t } from '../i18n'
 
 interface Props {
   teamAName: string
@@ -33,13 +34,13 @@ export default function Scoreboard({ teamAName, teamBName, expenses }: Props) {
 
       <div className="text-center rounded-xl py-3 bg-[#0f0800] border border-gray-800">
         {settlement.isEven ? (
-          <p className="font-heading text-xl text-even uppercase tracking-widest">Even! 🎉</p>
+          <p className="font-heading text-xl text-even uppercase tracking-widest">{t.scoreboard.even}</p>
         ) : (
           <p className="font-body text-sm text-gray-300">
             <span className={settlement.owingTeam === 'a' ? 'text-team-a' : 'text-team-b'}>
               {teamName(settlement.owingTeam!)}
             </span>
-            {' owes '}
+            {t.scoreboard.owes}
             <span className={settlement.owedTeam === 'a' ? 'text-team-a' : 'text-team-b'}>
               {teamName(settlement.owedTeam!)}
             </span>

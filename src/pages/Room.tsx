@@ -11,6 +11,7 @@ import Toast from '../components/Toast'
 import SyncStatus from '../components/SyncStatus'
 import PinGate from '../components/PinGate'
 import type { Team } from '../types'
+import { t } from '../i18n'
 
 export default function Room() {
   const { roomId } = useParams<{ roomId: string }>()
@@ -29,7 +30,7 @@ export default function Room() {
   if (roomState.status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-dvh">
-        <div className="font-heading text-3xl text-gray-600 animate-pulse">Loading…</div>
+        <div className="font-heading text-3xl text-gray-600 animate-pulse">{t.room.loading}</div>
       </div>
     )
   }
@@ -37,8 +38,8 @@ export default function Room() {
   if (roomState.status === 'not_found' || roomState.status === 'error') {
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh gap-4 px-4">
-        <h1 className="font-heading text-4xl text-team-b">Room Not Found</h1>
-        <button onClick={() => navigate('/')} className="text-team-a underline font-body">Go home</button>
+        <h1 className="font-heading text-4xl text-team-b">{t.room.notFound}</h1>
+        <button onClick={() => navigate('/')} className="text-team-a underline font-body">{t.room.goHome}</button>
       </div>
     )
   }
@@ -55,14 +56,14 @@ export default function Room() {
   async function handleAddExpense(data: { team: Team; amount: number; description: string }) {
     setModalOpen(false)
     const error = await addExpense({ room_id: roomId!, ...data })
-    if (error) addToast('Failed to save expense. Try again.', 'error')
-    else addToast('Expense added!', 'success')
+    if (error) addToast(t.toast.addFail, 'error')
+    else addToast(t.toast.addSuccess, 'success')
   }
 
   async function handleDelete(id: string) {
     const error = await deleteExpense(id)
-    if (error) addToast('Failed to delete. Try again.', 'error')
-    else addToast('Expense removed.', 'info')
+    if (error) addToast(t.toast.deleteFail, 'error')
+    else addToast(t.toast.deleteSuccess, 'info')
   }
 
   return (
@@ -72,7 +73,7 @@ export default function Room() {
           <h1 className="font-heading text-3xl uppercase text-white tracking-wide">{room.name}</h1>
           <button
             onClick={() => setShareOpen(true)}
-            aria-label="Share room"
+            aria-label={t.room.shareAriaLabel}
             className="text-gray-500 hover:text-team-a transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -121,7 +122,7 @@ export default function Room() {
       <button
         onClick={() => setModalOpen(true)}
         className="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-team-a text-black font-heading text-4xl shadow-lg shadow-team-a/30 flex items-center justify-center z-30"
-        aria-label="Add expense"
+        aria-label={t.room.addAriaLabel}
       >
         +
       </button>
