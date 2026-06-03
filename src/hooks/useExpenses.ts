@@ -15,7 +15,7 @@ export function useExpenses(roomId: string) {
       .order('created_at', { ascending: false })
       .then(({ data, error }) => {
         if (error) setSyncState('error')
-        else setExpenses(data ?? [])
+        else setExpenses((data ?? []) as Expense[])
       })
 
     const channel = supabase
@@ -38,7 +38,7 @@ export function useExpenses(roomId: string) {
 
   async function addExpense(expense: Omit<Expense, 'id' | 'created_at'>) {
     setSyncState('saving')
-    const { error } = await supabase.from('expenses').insert(expense)
+    const { error } = await supabase.from('expenses').insert(expense as Record<string, unknown>)
     setSyncState(error ? 'error' : 'synced')
     return error
   }

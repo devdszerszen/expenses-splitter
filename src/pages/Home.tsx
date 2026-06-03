@@ -35,12 +35,12 @@ export default function Home() {
     const pin_hash = pin ? await hashPin(pin) : null
     const { data, error: dbError } = await supabase
       .from('rooms')
-      .insert({ name: roomName.trim(), team_a_name: teamA.trim(), team_b_name: teamB.trim(), pin_hash })
+      .insert({ name: roomName.trim(), team_a_name: teamA.trim(), team_b_name: teamB.trim(), pin_hash } as Record<string, unknown>)
       .select('id')
       .single()
     setCreating(false)
     if (dbError || !data) { setError('Failed to create room. Check your connection.'); return }
-    navigate(`/room/${data.id}`)
+    navigate(`/room/${(data as { id: string }).id}`)
   }
 
   function joinRoom() {

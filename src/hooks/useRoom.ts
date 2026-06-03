@@ -22,7 +22,7 @@ export function useRoom(roomId: string | undefined): RoomState {
       .single()
       .then(({ data, error }) => {
         if (error || !data) setState({ status: 'not_found' })
-        else setState({ status: 'ok', room: data })
+        else setState({ status: 'ok', room: data as Room })
       })
   }, [roomId])
 
